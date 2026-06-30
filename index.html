@@ -530,15 +530,25 @@ let hoveredEl=null;
 let activeLayers=new Set();
 let animTarget=null;
 
+// ── SIZING — proven no-dead-space formula, made resilient to layout/timing races ──
 function resize(){
   const wrap=document.getElementById('sphere-wrap');
   const w=wrap.clientWidth;
-  const h=w; // full-bleed square — no dead space on sides
+  if(!w) return; // wrap not laid out yet — bail, a later call will catch it
+  const h=Math.min(w, Math.max(w*0.75, window.innerHeight*0.55));
   canvas.width=w; canvas.height=h;
-  canvas.style.height=h+'px'; wrap.style.height=h+'px';
-  W=w; H=h; R=W*0.47; draw._stars=null;
+  canvas.style.height=h+'px';
+  wrap.style.height=h+'px';
+  W=w; H=h;
+  R=Math.min(W,H)*0.47;
+  draw._stars=null;
 }
-resize(); window.addEventListener('resize', ()=>{ if(currentView==='sphere') resize(); });
+resize();
+window.addEventListener('resize', ()=>{ if(currentView==='sphere') resize(); });
+window.addEventListener('load', ()=>{ if(currentView==='sphere') resize(); });
+if(window.ResizeObserver){
+  new ResizeObserver(()=>{ if(currentView==='sphere') resize(); }).observe(document.getElementById('sphere-wrap'));
+}
 
 canvas.addEventListener('mousedown',e=>{dragging=true;dragX=e.clientX;dragY=e.clientY;});
 canvas.addEventListener('mousemove',e=>{
@@ -547,18 +557,27 @@ canvas.addEventListener('mousemove',e=>{
 });
 canvas.addEventListener('mouseup',()=>dragging=false);
 canvas.addEventListener('mouseleave',()=>{dragging=false;hoveredEl=null;updateInfo(null);});
-canvas.addEventListener('touchstart',e=>{dragging=true;dragX=e.touches[0].clientX;dragY=e.touches[0].clientY;},{passive:true});
+canvas.addEventListener('touchstart',e=>{
+  dragging=true;dragX=e.touches[0].clientX;dragY=e.touches[0].clientY;
+  checkHover(dragX,dragY);
+},{passive:true});
 canvas.addEventListener('touchmove',e=>{
   if(!dragging)return;
   rotY+=(e.touches[0].clientX-dragX)*0.008;rotX+=(e.touches[0].clientY-dragY)*0.006;
   rotX=Math.max(-1.5,Math.min(1.5,rotX));dragX=e.touches[0].clientX;dragY=e.touches[0].clientY;
+  checkHover(dragX,dragY);
   e.preventDefault();
 },{passive:false});
-canvas.addEventListener('touchend',()=>dragging=false);
+canvas.addEventListener('touchend',e=>{
+  dragging=false;
+  if(hoveredEl){
+    playElementTone(hoveredEl.n, 0.85, 0.2);
+    if(songMode) addToSong(hoveredEl);
+  }
+});
 canvas.addEventListener('click', e=>{
   if(hoveredEl){
     playElementTone(hoveredEl.n, 0.85, 0.2);
-    if(quizMode) handleQuizClick(hoveredEl);
     if(songMode) addToSong(hoveredEl);
   }
 });
@@ -567,7 +586,7 @@ function proj(x,y,z){
   const x2=x*Math.cos(rotY)+z*Math.sin(rotY),z2=-x*Math.sin(rotY)+z*Math.cos(rotY);
   const y3=y*Math.cos(rotX)-z2*Math.sin(rotX),z3=y*Math.sin(rotX)+z2*Math.cos(rotX);
   const fov=3.2,sc=fov/(fov+z3+2.0);
-  return {sx:W/2+x2*R*sc,sy:H/2-y3*R*sc,z3,sc};
+  return {sx:W/2+x2*R,sy:H/2-y3*R,z3,sc};
 }
 
 function checkHover(mx,my){
@@ -653,23 +672,17 @@ function draw(){
     const pulse=isDe||isFey||isSearchPulse?1+0.2*Math.sin(t*(isDe?2:3.5)):1;
     const sz=Math.max(5,14*p.sc*(isHov?2.5:1)*(isSearchPulse?1.6:1)*pulse);
 
-    if((front&&lv)||isHov){
-      const glowR=isHov?sz*1.8:sz*0.8;
-      const gr=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,glowR);
-      gr.addColorStop(0,`rgba(${r},${g},${b},${al*0.25})`);gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
-      ctx.beginPath();ctx.arc(p.sx,p.sy,glowR,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
-    }
-
     let symbolToShow = quizMode && !e._quizRevealed ? '?' : e.s;
-    ctx.beginPath();ctx.arc(p.sx,p.sy,sz*0.48,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${r},${g},${b},${isDe?al*0.5:al})`;ctx.fill();
+    const dotR=Math.max(1.2,sz*0.1);
+    ctx.beginPath();ctx.arc(p.sx,p.sy,dotR,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${r},${g},${b},${Math.min(1,(isDe?al*0.5:al)*1.4+0.15)})`;ctx.fill();
     if(isHov){ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=1.2;ctx.stroke();}
     if(isSearchPulse){ctx.strokeStyle='rgba(255,255,255,0.95)';ctx.lineWidth=2;ctx.stroke();}
 
     if(sz>7&&(front||isHov)&&lv){
       ctx.font=`bold ${Math.max(6,Math.min(11,sz*0.78))}px 'Orbitron',monospace`;
       ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillStyle=`rgba(${r},${g},${b},${Math.min(1,al*1.6)})`;
+      ctx.fillStyle=`rgba(${r},${g},${b},${Math.min(1,al*1.6+0.2)})`;
       ctx.fillText(symbolToShow,p.sx,p.sy);
     }
   });
