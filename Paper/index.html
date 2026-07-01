@@ -1,1 +1,623 @@
-<html></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Layered Spherical Periodic Table — Scientific Paper</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #1c1917;
+    --ink2: #44403c;
+    --ink3: #78716c;
+    --rule: #d6d3d1;
+    --gold: #92400e;
+    --gold-light: #fef3c7;
+    --blue: #1e3a5f;
+    --blue-light: #eff6ff;
+    --page: #fffef9;
+    --sidebar: #fafaf8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8e5e0;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  /* ── JOURNAL HEADER ── */
+  .journal-bar {
+    background: var(--blue);
+    color: #fff;
+    text-align: center;
+    padding: 10px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* ── PAGE ── */
+  .page {
+    max-width: 900px;
+    margin: 32px auto 60px;
+    background: var(--page);
+    box-shadow: 0 2px 60px rgba(0,0,0,0.18);
+  }
+
+  /* ── PAPER HEADER ── */
+  .paper-head {
+    padding: 56px 72px 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .paper-head .journal-ref {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .paper-head h1 {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--blue);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .paper-head .authors {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink2);
+    margin-bottom: 6px;
+  }
+  .paper-head .affiliation {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--ink3);
+    margin-bottom: 20px;
+  }
+  .paper-head .dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink3);
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    display: flex;
+    gap: 32px;
+  }
+
+  /* ── BODY ── */
+  .paper-body {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 0;
+  }
+
+  .main-col {
+    padding: 48px 48px 64px 72px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .side-col {
+    padding: 48px 28px 64px;
+    background: var(--sidebar);
+  }
+
+  /* ── ABSTRACT ── */
+  .abstract {
+    background: var(--blue-light);
+    border-left: 3px solid var(--blue);
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .abstract .abs-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  /* ── KEYWORDS ── */
+  .keywords {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--ink3);
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .keywords strong { color: var(--ink2); }
+  .kw-tag {
+    display: inline-block;
+    background: var(--gold-light);
+    border: 1px solid #d97706;
+    color: var(--gold);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin: 2px 3px 2px 0;
+  }
+
+  /* ── SECTIONS ── */
+  h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin: 40px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--blue);
+  }
+  h2 .sec-num {
+    color: var(--gold);
+    margin-right: 8px;
+  }
+
+  h3 {
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--blue);
+    margin: 28px 0 10px;
+  }
+
+  p { margin-bottom: 16px; font-size: 16px; text-align: justify; }
+
+  /* ── LISTS ── */
+  ul, ol {
+    margin: 8px 0 20px 0;
+    padding: 0;
+    list-style: none;
+  }
+  ul li, ol li {
+    position: relative;
+    padding: 6px 0 6px 24px;
+    font-size: 15px;
+    border-bottom: 1px solid #f5f4f2;
+    line-height: 1.65;
+  }
+  ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
+  ol { counter-reset: ol-counter; }
+  ol li { counter-increment: ol-counter; }
+  ol li::before { content: counter(ol-counter) '.'; position: absolute; left: 0; color: var(--blue); font-weight: 600; font-family: 'DM Sans', sans-serif; font-size: 12px; top: 8px; }
+
+  /* ── LAYER TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    margin: 20px 0 28px;
+  }
+  .data-table thead tr { background: var(--blue); color: #fff; }
+  .data-table thead th { padding: 10px 12px; text-align: left; letter-spacing: 0.08em; font-weight: 500; }
+  .data-table tbody tr { border-bottom: 1px solid var(--rule); }
+  .data-table tbody tr:nth-child(even) { background: #fafaf8; }
+  .data-table td { padding: 9px 12px; vertical-align: top; line-height: 1.5; }
+  .data-table td:first-child { font-weight: 600; white-space: nowrap; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  /* ── CALLOUT BOX ── */
+  .callout {
+    background: var(--gold-light);
+    border: 1px solid #d97706;
+    border-left: 4px solid var(--gold);
+    padding: 18px 20px;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .callout .callout-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  /* ── EQUATION-STYLE DISPLAY ── */
+  .display-eq {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    background: #f5f4f0;
+    border: 1px solid var(--rule);
+    padding: 16px 20px;
+    margin: 16px 0 24px;
+    color: var(--blue);
+    line-height: 1.9;
+  }
+
+  /* ── FOOTNOTE / REFERENCE ── */
+  .ref-num { font-size: 11px; vertical-align: super; color: var(--blue); font-family: 'DM Sans', sans-serif; }
+
+  /* ── SIDEBAR ── */
+  .side-section {
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .side-section:last-child { border-bottom: none; }
+  .side-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .side-section p {
+    font-size: 12px;
+    line-height: 1.65;
+    text-align: left;
+    color: var(--ink2);
+  }
+  .side-section ul li { font-size: 12px; }
+
+  .layer-pill {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    padding: 5px 10px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  /* ── REFERENCES SECTION ── */
+  .references { padding: 0 72px 64px; border-top: 2px solid var(--blue); }
+  .references h2 { margin-top: 32px; }
+  .ref-item {
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink2);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+  }
+  .ref-item .ref-n { color: var(--blue); font-weight: 600; margin-right: 8px; min-width: 24px; display: inline-block; }
+
+  /* ── FOOTER ── */
+  .paper-footer {
+    background: var(--blue);
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-align: center;
+    padding: 14px 20px;
+  }
+
+  hr.section-rule { border: none; border-top: 1px solid var(--rule); margin: 40px 0; }
+
+  @media (max-width: 700px) {
+    .paper-head { padding: 32px 24px 28px; }
+    .paper-body { grid-template-columns: 1fr; }
+    .main-col { padding: 32px 24px 48px; }
+    .side-col { padding: 28px 24px; border-top: 1px solid var(--rule); border-right: none; }
+    .references { padding: 0 24px 48px; }
+    .paper-head h1 { font-size: 22px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="journal-bar">Dezionz Solutions LLC · Theoretical Physics &amp; Chemical Education · Pre-Print · 2026</div>
+
+<div class="page">
+
+  <!-- PAPER HEADER -->
+  <div class="paper-head">
+    <div class="journal-ref">Original Research · Theoretical Chemistry &amp; Cosmological Physics</div>
+    <h1>The Layered Spherical Periodic Table: A Three-Dimensional Cosmological Element Classification System with Spectral Frequency as a Unified Periodic Property</h1>
+    <div class="authors">Dave Palmer<sup>1</sup></div>
+    <div class="affiliation"><sup>1</sup> Dezionz Solutions LLC, Lake Havasu City, Arizona, United States · founder@dezionz.com</div>
+    <div class="dates">
+      <span>Received: June 4, 2026</span>
+      <span>Revised: June 5, 2026</span>
+      <span>Status: Pre-Provisional · Confidential</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="paper-body">
+
+    <!-- MAIN COLUMN -->
+    <div class="main-col">
+
+      <!-- ABSTRACT -->
+      <div class="abstract">
+        <div class="abs-label">Abstract</div>
+        The standard two-dimensional periodic table, organized by atomic number and electron configuration since Mendeleev (1869), provides no mechanism for representing the environmental conditions under which elements exist, the positions of antimatter counterparts, or the periodic identity of dark matter. We present the Layered Spherical Periodic Table — a three-dimensional model in which elements are distributed across the surface and interior of a sphere at radial depths corresponding to the planetary pressure and temperature regimes in which they naturally occur. A longitude/latitude coordinate grid is overlaid on the sphere, preserving backward compatibility with standard period and group notation. The back hemisphere is assigned to antimatter elements at mirrored coordinates. An equatorial shell outside the primary sphere is designated for dark matter, assigned the symbol De (Delirium), atomic number Z=?, and a new block classification ø-Block. Hydrogen (Z=1) occupies the north pole as elemental origin; the theoretical element Feynmanium (Z=137) occupies the south pole as the hard boundary of atomic physics. Finally, spectral emission frequency is proposed as a formal periodic property for all elements — a property documented for all known elements and designated unknown (?) for Delirium, establishing its frequency as the primary theoretical target for dark matter detection. A fully functional interactive digital prototype has been developed and is described herein.
+      </div>
+
+      <!-- KEYWORDS -->
+      <div class="keywords">
+        <strong>Keywords: </strong>
+        <span class="kw-tag">Periodic Table</span>
+        <span class="kw-tag">Spherical Model</span>
+        <span class="kw-tag">Dark Matter</span>
+        <span class="kw-tag">Antimatter</span>
+        <span class="kw-tag">Spectral Frequency</span>
+        <span class="kw-tag">Planetary Layers</span>
+        <span class="kw-tag">Cosmological Chemistry</span>
+        <span class="kw-tag">ø-Block</span>
+        <span class="kw-tag">Delirium</span>
+        <span class="kw-tag">Chemical Education</span>
+      </div>
+
+      <!-- 1. INTRODUCTION -->
+      <h2><span class="sec-num">1.</span>Introduction</h2>
+      <p>The periodic table of elements is among the most consequential organizational frameworks in the history of science. First formalized by Mendeleev in 1869 and refined throughout the twentieth century, the standard model organizes 118 confirmed elements by atomic number and electron configuration into a two-dimensional grid of periods and groups. Its predictive power for chemical bonding, reactivity, and the discovery of unknown elements is well established.</p>
+      <p>However, the standard model was designed by and for laboratory chemists working at standard temperature and pressure. It is, by construction, context-free: iron at 298K and iron at Earth's core conditions of 360 GPa and 5,000K occupy the same cell and carry the same properties despite exhibiting fundamentally different structural, conductive, and phase behaviors<span class="ref-num">[1]</span>. No environmental axis exists. No position is reserved for antimatter counterparts of known elements, despite experimental confirmation of antihydrogen and theoretical frameworks for antimatter analogs of all known elements<span class="ref-num">[2]</span>. Dark matter — comprising approximately 27% of the mass-energy content of the observable universe<span class="ref-num">[3]</span> — has no representation whatsoever. And the theoretical physics boundary at Z=137, where the 1s electron orbital velocity equals the speed of light and the standard atomic model fails<span class="ref-num">[4]</span>, is structurally invisible in the flat model.</p>
+      <p>Several alternative periodic table geometries have been proposed, including the Janet left-step table<span class="ref-num">[5]</span>, the Benfey spiral<span class="ref-num">[6]</span>, and various three-dimensional arrangements organized by electron configuration. None address environmental conditions, antimatter, or dark matter as structural elements of the model.</p>
+      <p>We present the Layered Spherical Periodic Table — a unified three-dimensional classification model that resolves each of these deficiencies while preserving backward compatibility with standard period and group notation through a latitude/longitude coordinate system. We further propose spectral emission frequency as a formal periodic property, and identify the unknown frequency of the dark matter entry as the primary theoretical target for detection instrumentation.</p>
+
+      <!-- 2. THE MODEL -->
+      <h2><span class="sec-num">2.</span>The Model</h2>
+
+      <h3>2.1 Radial Layering: Environmental Conditions as the Primary Axis</h3>
+      <p>The central innovation of the Layered Spherical Periodic Table is the use of environmental pressure and temperature as the primary radial placement axis. Elements are assigned to one of five concentric shells corresponding to the natural planetary layers in which they predominate under gravitational differentiation:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Pressure</th>
+            <th>Temperature</th>
+            <th>Representative Elements</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="dot" style="background:#cc3300"></span>Core</td>
+            <td>&gt;360 GPa</td>
+            <td>&gt;5,000 K</td>
+            <td>Fe, Ni, Os, Ir, Pt, Au, U, Th, W, Re</td>
+          </tr>
+          <tr>
+            <td><span class="dot" style="background:#cc7700"></span>Deep Mantle</td>
+            <td>24–360 GPa</td>
+            <td>2,000–5,000 K</td>
+            <td>Hf, Ta, Cr, Cu, Ag, La, Ce, Bi</td>
+          </tr>
+          <tr>
+            <td><span class="dot" style="background:#7a9900"></span>Upper Mantle</td>
+            <td>0.3–24 GPa</td>
+            <td>500–2,000 K</td>
+            <td>Si, Mg, Ca, Al, Ti, Sc, Zr, Ge</td>
+          </tr>
+          <tr>
+            <td><span class="dot" style="background:#009966"></span>Crust</td>
+            <td>0.001–0.3 GPa</td>
+            <td>280–500 K</td>
+            <td>O, C, N, Na, K, P, S, Cl, Li, B</td>
+          </tr>
+          <tr>
+            <td><span class="dot" style="background:#0099cc"></span>Atmosphere</td>
+            <td>&lt;0.001 GPa</td>
+            <td>180–320 K</td>
+            <td>H, He, Ne, Ar, Kr, Xe, F</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>This layering reflects observed geochemical behavior. Siderophile elements — those with affinity for iron — migrate to the core during planetary formation<span class="ref-num">[7]</span>. Lithophile elements form silicate minerals in the mantle and crust. Atmophile elements remain gaseous at low pressures and populate the atmospheric shell. The radial structure of the model is therefore not arbitrary but grounded in the observed distribution of elements in rocky planetary bodies.</p>
+
+      <div class="callout">
+        <div class="callout-label">Key Insight</div>
+        The standard periodic table tells you what an element is. The Layered Spherical Periodic Table tells you what an element is, where it exists, and under what conditions — simultaneously.
+      </div>
+
+      <h3>2.2 The Longitude/Latitude Coordinate System</h3>
+      <p>A critical design requirement of the proposed model is backward compatibility with existing chemical notation and education. A spherical model that discards the period/group address system would face insurmountable adoption barriers. The solution applied here is directly analogous to the geographic coordinate system applied to Earth: the planet has always been a sphere, but the latitude/longitude grid allows anyone trained on flat maps to locate any position with precision. The sphere does not become flat; the grid makes it navigable.</p>
+      <p>In the Layered Spherical Periodic Table:</p>
+      <ul>
+        <li><strong>Latitude corresponds to period.</strong> Period 1 elements sit at high northern latitudes; heavier elements progress toward the equator and southern latitudes. Hydrogen (Z=1) is placed at the north pole as the elemental origin. Feynmanium (Z=137) is placed at the south pole as the physics boundary (see §2.5).</li>
+        <li><strong>Longitude corresponds to group.</strong> Elements sharing a group (vertical family in the standard table) share a meridian on the sphere. The periodic family relationships of the flat table are fully preserved.</li>
+        <li><strong>Radial depth provides the third axis.</strong> The layer assignment communicates environmental context without displacing the period/group address. Any element can be located by the same notation used in standard chemistry: period, group, and now layer.</li>
+      </ul>
+      <p>This coordinate system ensures that a student, researcher, or educator familiar with the standard table can navigate the spherical model immediately, while gaining access to a third axis of information that the flat table cannot provide.</p>
+
+      <h3>2.3 The Antimatter Hemisphere</h3>
+      <p>The standard table provides no structural position for antimatter elements. Antihydrogen was first synthesized at CERN in 1995 and trapped for measurable durations by 2010<span class="ref-num">[2]</span>; antimatter analogs of heavier elements are theoretically well-established. Their absence from the periodic table represents a structural gap rather than a scientific one.</p>
+      <p>In the Layered Spherical Periodic Table, the back hemisphere (longitudes 180° through 360°) is assigned to antimatter counterparts of all known elements. Each antimatter element occupies a mirrored position at identical period and group coordinates to its matter counterpart, with longitude offset by 180°. Anti-hydrogen mirrors hydrogen at the north pole of the back hemisphere. The matter and antimatter hemispheres are separated by the equatorial Delirium shell (§2.4), consistent with theoretical models of CP-violation and matter-antimatter asymmetry in the early universe<span class="ref-num">[8]</span>.</p>
+
+      <h3>2.4 The Delirium Equatorial Shell: ø-Block and Dark Matter</h3>
+      <p>At a radial distance outside the atmospheric shell, at the equator of the sphere, sits a single entry designated <strong>De — Delirium</strong>, with atomic number Z=?. Delirium represents the proposed periodic position of dark matter within the classification system.</p>
+      <p>The placement is governed by three physical observations:</p>
+      <ol>
+        <li><strong>No electromagnetic interaction.</strong> All observational evidence indicates dark matter does not emit, absorb, or reflect electromagnetic radiation<span class="ref-num">[3]</span>. Delirium therefore carries no spectral emission in the known EM range — its frequency entry is designated unknown (see §3).</li>
+        <li><strong>Gravitational cohesion.</strong> Dark matter's only confirmed interaction is gravitational. In the spherical model, the Delirium shell is the outermost structural layer — the scaffold that holds all inner shells in gravitational equilibrium. This mirrors the observed behavior of dark matter halos around visible matter structures<span class="ref-num">[9]</span>.</li>
+        <li><strong>Equatorial separation.</strong> The equatorial position of Delirium places it at the boundary between the matter and antimatter hemispheres, consistent with the theoretical role of a dark sector mediator in matter-antimatter asymmetry.</li>
+      </ol>
+      <p>Delirium is assigned to a new block designation: <strong>ø-Block</strong>. The established s-, p-, d-, and f-block designations are defined by the electron orbital type involved in bonding. The ø-Block designation extends this convention to elements with zero electromagnetic interaction — a logically consistent extension that provides a classification home for dark matter and any future entries with similar properties.</p>
+      <p>This is, to the authors' knowledge, the first assignment of a periodic table position and block designation to dark matter.</p>
+
+      <h3>2.5 The Physics Boundary Poles</h3>
+      <p>The north and south poles of the sphere carry special significance in the model. Hydrogen (Z=1) at the north pole represents the elemental origin — the simplest atom, the most abundant element in the universe, the starting point of all atomic chemistry. Its polar position reflects its unique status as the seed from which all heavier elements are ultimately synthesized through stellar nucleosynthesis<span class="ref-num">[10]</span>.</p>
+      <p>The south pole is assigned to the theoretical element with atomic number Z=137, referred to informally as Feynmanium following Richard Feynman's identification of this boundary<span class="ref-num">[4]</span>. At Z=137, the Bohr model predicts that the 1s electron would require an orbital velocity equal to the speed of light — a condition at which the standard framework of atomic physics fails. Z=137 is therefore the hard lower boundary of the model: the wall beyond which the rules of the table no longer apply. The poles give the sphere a narrative axis from elemental origin (north) to physical limit (south) that no flat table can communicate.</p>
+
+      <!-- 3. FREQUENCY -->
+      <h2><span class="sec-num">3.</span>Spectral Frequency as a Unified Periodic Property</h2>
+      <p>Every known element produces a unique spectral signature — discrete frequencies of electromagnetic radiation emitted or absorbed during electron energy transitions. Spectroscopy based on these signatures has been among the most powerful tools in both chemistry and astronomy for over 150 years: it is how we know the composition of stars, nebulae, and distant galaxies without physical contact<span class="ref-num">[11]</span>. Despite this, spectral emission frequency has never been incorporated as a named, tabulated property within any periodic table model.</p>
+      <p>We propose that spectral emission frequency be formalized as a periodic property within the Layered Spherical Periodic Table, displayed alongside atomic number, atomic mass, electron configuration, and layer assignment for each element. The data for all known elements is comprehensively documented in spectroscopic literature and requires no new measurement.</p>
+
+      <div class="display-eq">
+        Element Identity = { Z, symbol, name, period, group, layer, mass, e⁻ config, λ (spectral frequency) }
+        <br><br>
+        For known elements:   λ = documented emission spectrum (nm / THz)
+        For Delirium (De):    λ = ?  ← primary dark matter detection target
+      </div>
+
+      <p>The inclusion of frequency as a formal property transforms the table's function. An element is no longer identified solely by its proton count and electron arrangement — it is identified by the frequency at which it announces its presence to the universe. This is not a redundant property; it is the property by which most of what we know about the universe's elemental composition was actually determined.</p>
+
+      <h3>3.1 The Delirium Frequency and Dark Matter Detection</h3>
+      <p>The scientific consensus holds that dark matter has no electromagnetic interaction and therefore no detectable frequency within the known electromagnetic spectrum<span class="ref-num">[3]</span>. Decades of direct detection experiments — including XENON1T, LUX, and PandaX — have returned null results for the leading dark matter candidates: WIMPs, axions, and sterile neutrinos<span class="ref-num">[12]</span>.</p>
+      <p>We propose an alternative framing. The null results of these experiments are not evidence that dark matter has no frequency; they are evidence that dark matter's frequency, if it exists, lies outside the ranges those instruments were designed to detect. The instruments were built to detect known candidate particles at theoretically predicted cross-sections. No instrument has been designed from the premise that dark matter is a periodic element with an unknown but potentially measurable resonant frequency.</p>
+      <p>The assignment of a frequency property — currently unknown — to Delirium within the periodic table establishes a precise scientific question: <em>at what frequency, if any, does dark matter oscillate, resonate, or interact?</em> Candidate domains for investigation include:</p>
+      <ul>
+        <li>Gravitational wave frequency ranges currently mapped by LIGO and future space-based detectors</li>
+        <li>Sub-Planck oscillation frequencies below the current resolution of quantum measurement</li>
+        <li>Frequency ranges associated with gravitational lensing anomalies at galactic scales</li>
+        <li>Hypothetical dark photon frequencies in extensions of the Standard Model<span class="ref-num">[13]</span></li>
+      </ul>
+      <p>The question mark assigned to Delirium's frequency is not a gap in the table. It is the most consequential open question in modern physics expressed as a single cell in a periodic model — and it defines the detection target with a precision that no prior framework has provided.</p>
+
+      <!-- 4. PRIOR ART -->
+      <h2><span class="sec-num">4.</span>Relationship to Prior Art</h2>
+      <p>Several alternative periodic table geometries have been proposed and are distinguished from the present model as follows:</p>
+      <ul>
+        <li><strong>Janet Left-Step Table (1928)<span class="ref-num">[5]</span>:</strong> Reorganizes the flat table by electron shell filling sequence (Madelung order). Remains two-dimensional. Provides no environmental axis, no antimatter positions, and no dark matter entry.</li>
+        <li><strong>Benfey Spiral Table (1964)<span class="ref-num">[6]</span>:</strong> Renders elements on a two-dimensional Archimedean spiral emphasizing block continuity. Adds no environmental or cosmological information.</li>
+        <li><strong>Three-dimensional periodic table proposals (various)<span class="ref-num">[14]</span>:</strong> Multiple three-dimensional arrangements have been proposed, all organized by electron configuration. None use environmental pressure/temperature as a radial axis. None incorporate antimatter or dark matter.</li>
+        <li><strong>High-pressure phase research (Oganov et al.)<span class="ref-num">[1]</span>:</strong> Extensively documents element and compound behavior under extreme pressure conditions. Does not propose a unified classification model incorporating pressure as an organizational axis.</li>
+      </ul>
+      <p>The Layered Spherical Periodic Table is the first known model to simultaneously: (1) use environmental conditions as the primary radial placement axis; (2) assign structural positions to antimatter elements; (3) provide a periodic position and block designation for dark matter; (4) preserve standard period/group coordinates via a geographic grid system; and (5) incorporate spectral emission frequency as a formal periodic property.</p>
+
+      <!-- 5. PROTOTYPE -->
+      <h2><span class="sec-num">5.</span>Working Prototype</h2>
+      <p>A fully functional interactive digital prototype has been developed and demonstrates the practical viability of the model. The prototype renders a three-dimensional sphere in a standard web browser using HTML5 Canvas with the following implemented features:</p>
+      <ul>
+        <li>All documented elements distributed across five planetary layers at computed radial depths</li>
+        <li>Antimatter elements rendered in the back hemisphere at mirrored period/group coordinates</li>
+        <li>Delirium (De) rendered as a pulsing equatorial ring at the Delirium shell radius</li>
+        <li>Hydrogen at the north pole; Feynmanium (Z=137) at the south pole</li>
+        <li>Latitude/longitude grid lines corresponding to period and group coordinates</li>
+        <li>Interactive rotation, layer isolation, and element selection with name, atomic number, layer conditions, and descriptive data</li>
+        <li>Painter's algorithm depth sorting for correct 3D occlusion</li>
+      </ul>
+      <p>The prototype was developed concurrently with the theoretical model and serves as proof of concept for both the scientific framework and its application as an educational tool.</p>
+
+      <!-- 6. APPLICATIONS -->
+      <h2><span class="sec-num">6.</span>Potential Applications</h2>
+      <ul>
+        <li><strong>Science education:</strong> The spherical model communicates the distribution of elements in planetary bodies intuitively and visually, making abstract geochemical concepts accessible at the secondary and undergraduate levels.</li>
+        <li><strong>Planetary and geochemical research:</strong> Provides a classification framework for element behavior across pressure-temperature regimes relevant to planetary interiors and exoplanet modeling.</li>
+        <li><strong>Dark matter research:</strong> Establishes a periodic framework that frames dark matter detection as a frequency identification problem — a reframing with potential to direct instrumentation design.</li>
+        <li><strong>Astrophysics and cosmology:</strong> The inclusion of antimatter and dark matter positions makes the model applicable to cosmological discussions that the standard table cannot support.</li>
+        <li><strong>Interactive visualization:</strong> The spherical geometry is natively suited to digital, rotatable 3D interfaces for classroom, museum, and research applications.</li>
+      </ul>
+
+      <!-- 7. CONCLUSIONS -->
+      <h2><span class="sec-num">7.</span>Conclusions</h2>
+      <p>The standard periodic table is an extraordinary scientific achievement that has served chemistry for over 150 years. It is also, by construction, a laboratory instrument — optimized for predicting chemical behavior at standard conditions, with no framework for the 99.9% of the universe that exists under conditions far removed from a terrestrial laboratory.</p>
+      <p>The Layered Spherical Periodic Table does not replace the standard model. It extends it into three dimensions, adds the environmental context the standard model omits, provides structural positions for antimatter and dark matter, and proposes spectral frequency as the formal periodic property that unifies elemental identity with detectability. The longitude/latitude coordinate system ensures that nothing already known is lost in the transition.</p>
+      <p>The assignment of an unknown frequency to Delirium — dark matter's periodic entry — reframes one of the most intractable problems in modern physics as a question with a specific, measurable answer waiting to be found. That reframing may be the model's most consequential contribution.</p>
+
+      <hr class="section-rule">
+
+      <!-- ACKNOWLEDGMENTS -->
+      <h2><span class="sec-num"></span>Acknowledgments</h2>
+      <p>The author developed this model independently. No external funding was received. The interactive prototype was built entirely through conversational development on mobile hardware, June 4–5, 2026.</p>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="side-col">
+
+      <div class="side-section">
+        <div class="side-label">Correspondence</div>
+        <p>Dave Palmer<br>Dezionz Solutions LLC<br>Lake Havasu City, AZ<br>founder@dezionz.com</p>
+      </div>
+
+      <div class="side-section">
+        <div class="side-label">Layer Colors</div>
+        <span class="layer-pill" style="background:#fff0ee;color:#cc3300;border-left:3px solid #cc3300">● Core</span>
+        <span class="layer-pill" style="background:#fff8ee;color:#cc7700;border-left:3px solid #cc7700">● Deep Mantle</span>
+        <span class="layer-pill" style="background:#f5faee;color:#7a9900;border-left:3px solid #7a9900">● Upper Mantle</span>
+        <span class="layer-pill" style="background:#eefaf5;color:#009966;border-left:3px solid #009966">● Crust</span>
+        <span class="layer-pill" style="background:#eef8fc;color:#0099cc;border-left:3px solid #0099cc">● Atmosphere</span>
+        <span class="layer-pill" style="background:#f8eeff;color:#7700cc;border-left:3px dashed #7700cc">⊗ Delirium (ø)</span>
+        <span class="layer-pill" style="background:#fff0ff;color:#cc00cc;border-left:3px dashed #cc00cc">◐ Antimatter</span>
+      </div>
+
+      <div class="side-section">
+        <div class="side-label">Key Symbols</div>
+        <p style="font-family:'DM Mono',monospace;font-size:11px;line-height:2">
+          H → North Pole<br>
+          Z=137 → South Pole<br>
+          De → Equator (ø)<br>
+          λ=? → Unknown freq.<br>
+          Z=? → Unknown Z<br>
+          180° offset → Antimatter
+        </p>
+      </div>
+
+      <div class="side-section">
+        <div class="side-label">Novel Claims</div>
+        <ul>
+          <li>Pressure/temp as radial axis</li>
+          <li>Lat/lon period/group grid</li>
+          <li>Antimatter hemisphere</li>
+          <li>Dark matter as De, ø-Block</li>
+          <li>H pole / Z=137 pole</li>
+          <li>Frequency as periodic property</li>
+          <li>De frequency = detection target</li>
+        </ul>
+      </div>
+
+      <div class="side-section">
+        <div class="side-label">Prototype Status</div>
+        <p>Interactive 3D browser prototype: <strong>Complete</strong><br><br>
+        Spectral frequency layer: <strong>Planned</strong><br><br>
+        Disclosure filed: <strong>June 4, 2026</strong><br><br>
+        Provisional patent: <strong>Pending</strong></p>
+      </div>
+
+      <div class="side-section">
+        <div class="side-label">Competing Interests</div>
+        <p>The author declares no competing financial interests. This work is an original independent invention of the author.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="references">
+    <h2><span class="sec-num"></span>References</h2>
+    <div class="ref-item"><span class="ref-n">[1]</span> Oganov, A.R. et al. (2019). Structure, Bonding, and Mineralogy of Carbon at Extreme Conditions. <em>Reviews in Mineralogy and Geochemistry</em>, 75, 47–77.</div>
+    <div class="ref-item"><span class="ref-n">[2]</span> ALPHA Collaboration (2011). Confinement of antihydrogen for 1,000 seconds. <em>Nature Physics</em>, 7, 558–564.</div>
+    <div class="ref-item"><span class="ref-n">[3]</span> Planck Collaboration (2020). Planck 2018 results: Cosmological parameters. <em>Astronomy &amp; Astrophysics</em>, 641, A6.</div>
+    <div class="ref-item"><span class="ref-n">[4]</span> Feynman, R.P. (1985). <em>QED: The Strange Theory of Light and Matter</em>. Princeton University Press.</div>
+    <div class="ref-item"><span class="ref-n">[5]</span> Janet, C. (1928). La classification hélicoïdale des éléments chimiques. <em>Beauvais</em>.</div>
+    <div class="ref-item"><span class="ref-n">[6]</span> Benfey, O.T. (1964). Attempt at a natural classification of chemical elements. <em>Journal of Chemical Education</em>, 41(1), 38.</div>
+    <div class="ref-item"><span class="ref-n">[7]</span> Goldschmidt, V.M. (1937). The principles of distribution of chemical elements in minerals and rocks. <em>Journal of the Chemical Society</em>, 655–673.</div>
+    <div class="ref-item"><span class="ref-n">[8]</span> Sakharov, A.D. (1967). Violation of CP invariance, C asymmetry, and baryon asymmetry of the universe. <em>JETP Letters</em>, 5, 24–27.</div>
+    <div class="ref-item"><span class="ref-n">[9]</span> Rubin, V., Ford, W.K. (1970). Rotation of the Andromeda Nebula from a spectroscopic survey of emission regions. <em>Astrophysical Journal</em>, 159, 379.</div>
+    <div class="ref-item"><span class="ref-n">[10]</span> Burbidge, E.M. et al. (1957). Synthesis of the elements in stars. <em>Reviews of Modern Physics</em>, 29(4), 547.</div>
+    <div class="ref-item"><span class="ref-n">[11]</span> Kirchhoff, G., Bunsen, R. (1860). Chemical analysis by spectrum-observations. <em>Philosophical Magazine</em>, 20, 89–109.</div>
+    <div class="ref-item"><span class="ref-n">[12]</span> XENON Collaboration (2020). Excess electronic recoil events in XENON1T. <em>Physical Review D</em>, 102, 072004.</div>
+    <div class="ref-item"><span class="ref-n">[13]</span> Fabbrichesi, M. et al. (2021). The dark photon. <em>arXiv</em>:2005.01515.</div>
+    <div class="ref-item"><span class="ref-n">[14]</span> Scerri, E.R. (2007). <em>The Periodic Table: Its Story and Its Significance</em>. Oxford University Press.</div>
+  </div>
+
+  <div class="paper-footer">
+    © 2026 Dave Palmer / Dezionz Solutions LLC · All Rights Reserved · Pre-Print · Confidential · Provisional Patent Pending
+  </div>
+
+</div>
+</body>
+</html>
+
